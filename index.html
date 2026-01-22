@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Delta Direct Install</title>
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <style>
+        * { margin:0; padding:0; box-sizing:border-box; }
+        body { 
+            background: linear-gradient(135deg, #0a0a0a 0%, #1a1a2e 50%, #16213e 100%); 
+            color: white; 
+            font-family: -apple-system, sans-serif; 
+            min-height: 100vh; 
+            display: flex; 
+            flex-direction: column; 
+            align-items: center; 
+            justify-content: center; 
+            padding: 20px;
+        }
+        .logo { font-size: 48px; margin-bottom: 20px; }
+        .install-btn { 
+            background: linear-gradient(45deg, #00ff88, #00cc6a); 
+            color: black; 
+            padding: 25px 60px; 
+            font-size: 28px; 
+            font-weight: 700; 
+            border: none; 
+            border-radius: 25px; 
+            cursor: pointer; 
+            box-shadow: 0 20px 40px rgba(0,255,136,0.3);
+            transition: all 0.3s ease;
+            text-decoration: none;
+            display: inline-block;
+        }
+        .install-btn:hover { transform: translateY(-5px); box-shadow: 0 25px 50px rgba(0,255,136,0.4); }
+        .status { margin-top: 30px; font-size: 18px; opacity: 0.9; }
+        .official { position: fixed; bottom: 20px; right: 20px; font-size: 12px; opacity: 0.6; }
+        .ipa-path { font-family: monospace; background: rgba(0,255,136,0.1); padding: 10px; border-radius: 8px; margin-top: 20px; font-size: 14px; }
+    </style>
+</head>
+<body>
+    <div class="logo">🚀 Delta Executor</div>
+    <h1 style="font-size: 36px; margin-bottom: 20px;">v2.703 Official Direct</h1>
+    <p style="font-size: 20px; margin-bottom: 40px; opacity: 0.9;">No ads • No key • Developer approved</p>
+    
+    <a href="https://deltadirect.pages.dev/install.mobileconfig" class="install-btn">
+        📱 Install Delta (2.1MB)
+    </a>
+    
+    <div class="status">
+        After install → Settings → General → VPN & Device Management → Trust "Delta Direct"
+    </div>
+    
+    <div class="ipa-path">
+        IPA: deltadirect.pages.dev/d.ipa
+    </div>
+    
+    <div class="official">✅ Official partner installer</div>
+</body>
+</html>

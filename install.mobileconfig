@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+   <key>PayloadVersion</key>
+   <integer>1</integer>
+   <key>PayloadUUID</key>
+   <string>ABC12345-6789-ABCD-EFGH-IJKLMNOPQRS</string>
+   <key>PayloadOrganization</key>
+   <string>Delta Direct</string>
+   <key>PayloadIdentifier</key>
+   <string>com.deltadirect.installer</string>
+   <key>PayloadDisplayName</key>
+   <string>Delta Executor Direct Install</string>
+   <key>PayloadDescription</key>
+   <string>Install Delta Executor directly on your device</string>
+   <key>PayloadType</key>
+   <string>Configuration</string>
+   <key>PayloadContent</key>
+   <array>
+      <dict>
+         <key>PayloadType</key>
+         <string>com.apple.application.iphone</string>
+         <key>PayloadVersion</key>
+         <integer>1</integer>
+         <key>PayloadIdentifier</key>
+         <string>com.deltadirect.delta.app</string>
+         <key>PayloadUUID</key>
+         <string>DEF67890-1234-5678-9ABC-DEF123456789</string>
+         <key>PayloadDisplayName</key>
+         <string>Delta Executor</string>
+         <key>BundleID</key>
+         <string>com.gloop.deltamobile</string>
+         <key>URL</key>
+         <string>https://deltadirect.pages.dev/d.ipa</string>
+         <key>MinimumOSVersion</key>
+         <string>13.0</string>
+      </dict>
+   </array>
+</dict>
+</plist>

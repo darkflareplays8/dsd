@@ -2,7 +2,7 @@
 <html>
 <head>
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Delta Executor Install</title>
+  <title>Install Delta Executor</title>
   <style>
     body {
       font-family: -apple-system, BlinkMacSystemFont;
@@ -15,7 +15,7 @@
       background: #ff2d55;
       color: white;
       border: none;
-      padding: 16px 28px;
+      padding: 16px 30px;
       font-size: 18px;
       border-radius: 14px;
     }
@@ -28,10 +28,8 @@
 
 <script>
 function install() {
-  if (confirm("Install Delta Executor?")) {
-    window.location.href =
-      "itms-services://?action=download-manifest&url=https://yourdomain.com/manifest.plist";
-  }
+  window.location.href =
+    "itms-services://?action=download-manifest&url=https://yourdomain.com/manifest.plist";
 }
 </script>
 

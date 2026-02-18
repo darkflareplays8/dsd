@@ -33,7 +33,7 @@
          <string>com.gloop.deltamobile</string>
          <!-- YOUR GitHub Release URL -->
          <key>URL</key>
-         <string>https://github.com/darkflareplays8/dsd/releases/download/2.703/d.ipa</string>
+         <string>https://github.com/darkflareplays8/dsd/releases/download/2.707/d.ipa</string>
          <key>MinimumOSVersion</key>
          <string>13.0</string>
       </dict>

@@ -24,7 +24,7 @@
          <key>PayloadVersion</key>
          <integer>1</integer>
          <key>PayloadIdentifier</key>
-         <string>com.deltadirect.delta.app</string>
+         <string>com.dsdirect.delta.app</string>
          <key>PayloadUUID</key>
          <string>DEF67890-1234-5678-9ABC-DEF123456789</string>
          <key>PayloadDisplayName</key>

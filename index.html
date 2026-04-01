@@ -4,9 +4,10 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <meta charset="UTF-8">
   <title>Delta Executor – VoidHub</title>
-  <meta name="description" content="Install Delta Executor directly on iOS via VoidHub. No ads. No BS.">
+  <meta name="description" content="Install Delta Executor directly on iOS via VoidHub. No ads. No BS. Open source.">
   <meta property="og:title" content="Delta Executor – VoidHub | Direct Install">
-  <meta property="og:description" content="Install Delta Executor directly on iOS via VoidHub. No ads. No BS.">
+  <meta property="og:description" content="Install Delta Executor directly on iOS via VoidHub. No ads. No BS. Open source.">
+  <meta name="keywords" content="delta executor, ios, open source, voidhub">
   <meta name="theme-color" content="#ff2d55">
   <link href="https://fonts.googleapis.com/css2?family=Syne:wght@700;800&family=DM+Sans:wght@400;500&display=swap" rel="stylesheet">
   <style>
@@ -14,7 +15,6 @@
 
     :root {
       --red: #ff2d55;
-      --red-dim: #c4183a;
       --bg: #080808;
       --surface: #111111;
       --border: #1e1e1e;
@@ -72,7 +72,6 @@
       background: rgba(255,45,85,0.12);
       border: 1px solid rgba(255,45,85,0.3);
       color: var(--red);
-      font-family: 'DM Sans', sans-serif;
       font-size: 11px;
       font-weight: 500;
       letter-spacing: 0.12em;
@@ -187,11 +186,15 @@
       Download .ipa
     </a>
 
-    <a class="btn btn-secondary" href="https://discord.gg/bSyqzPManD" target="_blank">
+    <a class="btn btn-secondary" href="https://discord.gg/xw2hjft2YA" target="_blank">
       <svg viewBox="0 0 24 24" fill="currentColor" width="18" height="18">
         <path d="M20.317 4.37a19.791 19.791 0 0 0-4.885-1.515.074.074 0 0 0-.079.037c-.21.375-.444.864-.608 1.25a18.27 18.27 0 0 0-5.487 0 12.64 12.64 0 0 0-.617-1.25.077.077 0 0 0-.079-.037A19.736 19.736 0 0 0 3.677 4.37a.07.07 0 0 0-.032.027C.533 9.046-.32 13.58.099 18.057c.002.022.015.043.032.056a19.9 19.9 0 0 0 5.993 3.03.078.078 0 0 0 .084-.028c.462-.63.874-1.295 1.226-1.994a.076.076 0 0 0-.041-.106 13.107 13.107 0 0 1-1.872-.892.077.077 0 0 1-.008-.128 10.2 10.2 0 0 0 .372-.292.074.074 0 0 1 .077-.01c3.928 1.793 8.18 1.793 12.062 0a.074.074 0 0 1 .078.01c.12.098.246.198.373.292a.077.077 0 0 1-.006.127 12.299 12.299 0 0 1-1.873.892.077.077 0 0 0-.041.107c.36.698.772 1.362 1.225 1.993a.076.076 0 0 0 .084.028 19.839 19.839 0 0 0 6.002-3.03.077.077 0 0 0 .032-.054c.5-5.177-.838-9.674-3.549-13.66a.061.061 0 0 0-.031-.03z"/>
       </svg>
       Join Discord
+    </a>
+
+    <a class="btn btn-secondary" href="https://github.com/darkflareplays8/dsd" target="_blank">
+      Open Source
     </a>
 
     <p class="error-msg" id="error-msg"></p>
@@ -205,31 +208,25 @@
     const REPO = 'darkflareplays8/dsd';
     const API_URL = `https://api.github.com/repos/${REPO}/releases/latest`;
 
-    // Fetch latest release from GitHub API — returns { ipaUrl, version }
     async function fetchLatestRelease() {
       const res = await fetch(API_URL, {
         headers: { Accept: 'application/vnd.github+json' }
       });
       if (!res.ok) throw new Error(`GitHub API ${res.status}`);
       const data = await res.json();
-
       const asset = data.assets && data.assets[0];
       if (!asset) throw new Error('No asset on latest release');
-
-      const ipaUrl = asset.browser_download_url;
-      const version = (data.tag_name || '').replace(/^v/i, '');
-      return { ipaUrl, version };
+      return {
+        ipaUrl: asset.browser_download_url,
+        version: (data.tag_name || '').replace(/^v/i, '')
+      };
     }
 
-    // Parse CFBundleShortVersionString from Info.plist inside the IPA (ZIP)
-    // Uses HTTP Range requests to avoid downloading the whole file
     async function fetchIpaVersion(ipaUrl) {
-      // Step 1: get file size
       const head = await fetch(ipaUrl, { method: 'HEAD' });
       const size = parseInt(head.headers.get('content-length') || '0', 10);
       if (!size) return null;
 
-      // Step 2: fetch last 65 KB (covers end-of-central-directory + central dir on most IPAs)
       const tailSize = Math.min(65536, size);
       const tailRes = await fetch(ipaUrl, {
         headers: { Range: `bytes=${size - tailSize}-${size - 1}` }
@@ -240,7 +237,6 @@
       const tailBytes = new Uint8Array(tailBuf);
       const tailView  = new DataView(tailBuf);
 
-      // Step 3: find end-of-central-directory (EOCD) signature PK\x05\x06
       let eocdOff = -1;
       for (let i = tailBytes.length - 22; i >= 0; i--) {
         if (tailBytes[i]===0x50 && tailBytes[i+1]===0x4b &&
@@ -251,15 +247,13 @@
       }
       if (eocdOff < 0) return null;
 
-      const cdOffset   = tailView.getUint32(eocdOff + 16, true); // absolute offset of central dir
-      const fetchedAt  = size - tailSize;                         // absolute offset of tailBuf[0]
-      const cdInBuf    = cdOffset - fetchedAt;
-      if (cdInBuf < 0) return null; // central dir outside tail — give up
+      const cdOffset  = tailView.getUint32(eocdOff + 16, true);
+      const cdInBuf   = cdOffset - (size - tailSize);
+      if (cdInBuf < 0) return null;
 
       const dec = new TextDecoder();
-
-      // Step 4: walk central directory looking for Payload/Foo.app/Info.plist
       let pos = cdInBuf;
+
       while (pos + 46 <= eocdOff) {
         if (tailBytes[pos]!==0x50 || tailBytes[pos+1]!==0x4b ||
             tailBytes[pos+2]!==0x01 || tailBytes[pos+3]!==0x02) break;
@@ -273,7 +267,6 @@
         const name       = dec.decode(tailBytes.slice(pos + 46, pos + 46 + fnLen));
 
         if (/^Payload\/[^/]+\.app\/Info\.plist$/i.test(name)) {
-          // Step 5: fetch local file header + compressed data
           const localRes = await fetch(ipaUrl, {
             headers: { Range: `bytes=${localOff}-${localOff + 30 + fnLen + 65535 + compSize}` }
           });
@@ -282,12 +275,9 @@
           const lBuf   = await localRes.arrayBuffer();
           const lBytes = new Uint8Array(lBuf);
           const lView  = new DataView(lBuf);
-          const lFnLen = lView.getUint16(26, true);
-          const lExLen = lView.getUint16(28, true);
-          const dStart = 30 + lFnLen + lExLen;
+          const dStart = 30 + lView.getUint16(26, true) + lView.getUint16(28, true);
           const data   = lBytes.slice(dStart, dStart + compSize);
 
-          // Step 6: decompress if needed
           let plistBytes;
           if (method === 0) {
             plistBytes = data;
@@ -311,14 +301,11 @@
             return null;
           }
 
-          // Step 7: extract version from plist XML
-          const xml   = new TextDecoder().decode(plistBytes);
-          const match = xml.match(/<key>CFBundleShortVersionString<\/key>\s*<string>([^<]+)<\/string>/);
-          if (match) return match[1].trim();
-
-          const m2 = xml.match(/<key>CFBundleVersion<\/key>\s*<string>([^<]+)<\/string>/);
+          const xml = new TextDecoder().decode(plistBytes);
+          const m1  = xml.match(/<key>CFBundleShortVersionString<\/key>\s*<string>([^<]+)<\/string>/);
+          if (m1) return m1[1].trim();
+          const m2  = xml.match(/<key>CFBundleVersion<\/key>\s*<string>([^<]+)<\/string>/);
           if (m2) return m2[1].trim();
-
           return null;
         }
 
@@ -328,7 +315,6 @@
       return null;
     }
 
-    // Manifest is served dynamically by the Cloudflare Pages Function at /manifest.plist
     function buildManifestUri() {
       return `${location.origin}/manifest.plist`;
     }
@@ -342,16 +328,12 @@
       try {
         const { ipaUrl, version: releaseVersion } = await fetchLatestRelease();
 
-        // Show release tag version immediately
-        versionEl.textContent = `v${releaseVersion} · iOS 13+`;
-
-        // Enable download right away
-        btnDl.href            = ipaUrl;
-        btnDl.download        = `delta-${releaseVersion}.ipa`;
+        versionEl.textContent     = `v${releaseVersion} · iOS 13+`;
+        btnDl.href                = ipaUrl;
+        btnDl.download            = `delta-${releaseVersion}.ipa`;
         btnDl.style.pointerEvents = '';
-        btnDl.style.opacity   = '';
+        btnDl.style.opacity       = '';
 
-        // Try reading the real version out of the IPA binary
         let displayVersion = releaseVersion;
         try {
           const parsed = await fetchIpaVersion(ipaUrl);
@@ -359,17 +341,15 @@
             displayVersion = parsed;
             versionEl.textContent = `v${displayVersion} · iOS 13+`;
           }
-        } catch (_) { /* fall through — release tag is fine */ }
+        } catch (_) {}
 
-        // Point install button at the hosted manifest endpoint
-        const manifestUri = buildManifestUri();
-        btnInstall.dataset.manifest = manifestUri;
+        btnInstall.dataset.manifest = buildManifestUri();
         btnInstall.disabled = false;
 
       } catch (err) {
-        versionEl.textContent  = 'Failed to load';
-        errorEl.textContent    = 'Could not fetch latest release. Try again later.';
-        errorEl.style.display  = '';
+        versionEl.textContent = 'Failed to load';
+        errorEl.textContent   = 'Could not fetch latest release. Try again later.';
+        errorEl.style.display = '';
         console.error(err);
       }
     }

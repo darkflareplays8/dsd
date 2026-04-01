@@ -328,43 +328,9 @@
       return null;
     }
 
-    // Build an itms-services manifest as a base64 data URI (no server needed)
-    function buildManifestUri(ipaUrl, version) {
-      const xml = [
-        '<?xml version="1.0" encoding="UTF-8"?>',
-        '<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN"',
-        '"http://www.apple.com/DTDs/PropertyList-1.0.dtd">',
-        '<plist version="1.0">',
-        '<dict>',
-        '  <key>items</key>',
-        '  <array>',
-        '    <dict>',
-        '      <key>assets</key>',
-        '      <array>',
-        '        <dict>',
-        '          <key>kind</key>',
-        '          <string>software-package</string>',
-        '          <key>url</key>',
-        `          <string>${ipaUrl}</string>`,
-        '        </dict>',
-        '      </array>',
-        '      <key>metadata</key>',
-        '      <dict>',
-        '        <key>bundle-identifier</key>',
-        '        <string>com.gloop.deltamobile</string>',
-        '        <key>bundle-version</key>',
-        `        <string>${version}</string>`,
-        '        <key>kind</key>',
-        '        <string>software</string>',
-        '        <key>title</key>',
-        '        <string>Delta Executor</string>',
-        '      </dict>',
-        '    </dict>',
-        '  </array>',
-        '</dict>',
-        '</plist>'
-      ].join('\n');
-      return 'data:application/xml;base64,' + btoa(unescape(encodeURIComponent(xml)));
+    // Manifest is served dynamically by the Cloudflare Pages Function at /manifest.plist
+    function buildManifestUri() {
+      return `${location.origin}/manifest.plist`;
     }
 
     async function init() {
@@ -395,8 +361,8 @@
           }
         } catch (_) { /* fall through — release tag is fine */ }
 
-        // Build manifest and enable install button
-        const manifestUri = buildManifestUri(ipaUrl, displayVersion);
+        // Point install button at the hosted manifest endpoint
+        const manifestUri = buildManifestUri();
         btnInstall.dataset.manifest = manifestUri;
         btnInstall.disabled = false;
 

@@ -378,6 +378,10 @@
       }, 400);
     }
 
+    function setMetaDescription(version) {
+      document.querySelector('meta[name="description"]').setAttribute('content', `Install Delta Executor directly on iOS via VoidHub. No ads. No BS. Open source. Current Version: ${version}`);
+    }
+
     async function init() {
       const versionEl  = document.getElementById('version-line');
       const btnInstall = document.getElementById('btn-install');
@@ -387,7 +391,8 @@
       try {
         const { ipaUrl, version: releaseVersion } = await fetchLatestRelease();
 
-        versionEl.textContent     = `v${releaseVersion} · iOS 13+`;
+        versionEl.textContent = `v${releaseVersion} · iOS 13+`;
+        setMetaDescription(releaseVersion);
         btnDl.href                = ipaUrl;
         btnDl.download            = `delta-${releaseVersion}.ipa`;
         btnDl.style.pointerEvents = '';
@@ -401,6 +406,7 @@
           if (parsed) {
             displayVersion = parsed;
             versionEl.textContent = `v${displayVersion} · iOS 13+`;
+            setMetaDescription(displayVersion);
           }
         } catch (_) {}
 
